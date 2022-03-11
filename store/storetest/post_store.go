@@ -691,7 +691,7 @@ func testPostStoreUpdate(t *testing.T, ss store.Store) {
 	ro3a := r3.Posts[o3.Id]
 
 	if ro3a.Message != o3a.Message {
-		require.Equal(t, ro3a.Hashtags, o3a.Hashtags, "Failed to update/get")
+		require.Equal(t, ro3a.HashTags, o3a.HashTags, "Failed to update/get")
 	}
 
 	o4, err := ss.Post().Save(&model.Post{
@@ -1904,7 +1904,7 @@ func testPostCountsByDay(t *testing.T, ss store.Store) {
 	o1.UserId = model.NewId()
 	o1.CreateAt = utils.MillisFromTime(utils.Yesterday())
 	o1.Message = NewTestId()
-	o1.Hashtags = "hashtag"
+	o1.HashTags = "hashtag"
 	o1, nErr = ss.Post().Save(o1)
 	require.NoError(t, nErr)
 
@@ -1931,7 +1931,7 @@ func testPostCountsByDay(t *testing.T, ss store.Store) {
 	o2a.UserId = o2.UserId
 	o2a.CreateAt = o1.CreateAt - (1000 * 60 * 60 * 24 * 2)
 	o2a.Message = NewTestId()
-	o2a.Hashtags = "hashtag"
+	o2a.HashTags = "hashtag"
 	o2a.FileIds = []string{"fileId2"}
 	_, nErr = ss.Post().Save(o2a)
 	require.NoError(t, nErr)

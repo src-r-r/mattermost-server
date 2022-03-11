@@ -146,7 +146,7 @@ func TestLRUMarshalUnMarshal(t *testing.T) {
 		Props: map[string]interface{}{
 			"key": "val",
 		},
-		Hashtags:      "Hashtags",
+		HashTags:      "Hashtags",
 		Filenames:     []string{"item1", "item2"},
 		FileIds:       []string{"item1", "item2"},
 		PendingPostId: "PendingPostId",
@@ -493,7 +493,7 @@ func BenchmarkLRU(b *testing.B) {
 		Props: map[string]interface{}{
 			"key": "val",
 		},
-		Hashtags:      "Hashtags",
+		HashTags:      "Hashtags",
 		Filenames:     []string{"item1", "item2"},
 		FileIds:       []string{"item1", "item2"},
 		PendingPostId: "PendingPostId",

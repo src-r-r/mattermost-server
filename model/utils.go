@@ -548,43 +548,13 @@ func Etag(parts ...interface{}) string {
 }
 
 var (
-	validHashtag = regexp.MustCompile(`^(#\pL[\pL\d\-_.]*[\pL\d])$`)
-	puncStart    = regexp.MustCompile(`^[^\pL\d\s#]+`)
-	hashtagStart = regexp.MustCompile(`^#{2,}`)
-	puncEnd      = regexp.MustCompile(`[^\pL\d\s]+$`)
+	validHashtag     = regexp.MustCompile(`^(#\pL[\pL\d\-_.]*[\pL\d])$`)
+	validHashtagText = regexp.MustCompile(`(<?#)^(#\pL[\pL\d\-_.]*[\pL\d])$`)
+	hashtagStart     = regexp.MustCompile(`^#{2,}`)
 )
 
-func ParseHashtags(text string) (string, string) {
-	words := strings.Fields(text)
-
-	hashtagString := ""
-	plainString := ""
-	for _, word := range words {
-		// trim off surrounding punctuation
-		word = puncStart.ReplaceAllString(word, "")
-		word = puncEnd.ReplaceAllString(word, "")
-
-		// and remove extra pound #s
-		word = hashtagStart.ReplaceAllString(word, "#")
-
-		if validHashtag.MatchString(word) {
-			hashtagString += " " + word
-		} else {
-			plainString += " " + word
-		}
-	}
-
-	if len(hashtagString) > 1000 {
-		hashtagString = hashtagString[:999]
-		lastSpace := strings.LastIndex(hashtagString, " ")
-		if lastSpace > -1 {
-			hashtagString = hashtagString[:lastSpace]
-		} else {
-			hashtagString = ""
-		}
-	}
-
-	return strings.TrimSpace(hashtagString), strings.TrimSpace(plainString)
+func ParseHashtags(text string) ([]string, []string) {
+	return validHashtag.FindAllString(text, -1), validHashtagText.FindAllString(text, -1)
 }
 
 func ClearMentionTags(post string) string {

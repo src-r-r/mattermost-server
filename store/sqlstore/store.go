@@ -70,6 +70,7 @@ const (
 type SqlStoreStores struct {
 	team                 store.TeamStore
 	channel              store.ChannelStore
+	hashtag              store.HashtagStore
 	post                 store.PostStore
 	retentionPolicy      store.RetentionPolicyStore
 	thread               store.ThreadStore
@@ -159,6 +160,7 @@ func New(settings model.SqlSettings, metrics einterfaces.MetricsInterface) *SqlS
 
 	store.stores.team = newSqlTeamStore(store)
 	store.stores.channel = newSqlChannelStore(store, metrics)
+	store.stores.hashtag = newSqlHashTagStore(store, metrics)
 	store.stores.post = newSqlPostStore(store, metrics)
 	store.stores.retentionPolicy = newSqlRetentionPolicyStore(store, metrics)
 	store.stores.user = newSqlUserStore(store, metrics)
@@ -800,6 +802,10 @@ func (ss *SqlStore) Channel() store.ChannelStore {
 
 func (ss *SqlStore) Post() store.PostStore {
 	return ss.stores.post
+}
+
+func (ss *SqlStore) HashTag() store.HashTagStore {
+	return ss.stores.hashtag
 }
 
 func (ss *SqlStore) RetentionPolicy() store.RetentionPolicyStore {

@@ -175,6 +175,7 @@ github.com/dgryski/go-rendezvous
 ## explicit
 github.com/disintegration/imaging
 # github.com/dsnet/compress v0.0.2-0.20210315054119-f66993602bf5
+## explicit
 github.com/dsnet/compress
 github.com/dsnet/compress/bzip2
 github.com/dsnet/compress/bzip2/internal/sais
@@ -526,7 +527,6 @@ github.com/pmezard/go-difflib/difflib
 # github.com/prometheus/client_golang v1.12.1
 ## explicit
 github.com/prometheus/client_golang/prometheus
-github.com/prometheus/client_golang/prometheus/collectors
 github.com/prometheus/client_golang/prometheus/internal
 github.com/prometheus/client_golang/prometheus/promhttp
 # github.com/prometheus/client_model v0.2.0

@@ -348,7 +348,7 @@ func (th *SearchTestHelper) createPostModel(userID, channelID, message, hashtags
 		ChannelId:     channelID,
 		PendingPostId: model.NewId() + ":" + fmt.Sprint(model.GetMillis()),
 		UserId:        userID,
-		Hashtags:      hashtags,
+		HashTags:      hashtags,
 		IsPinned:      pinned,
 		CreateAt:      createAt,
 		Type:          postType,

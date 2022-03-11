@@ -62,7 +62,6 @@ func postSliceColumnsWithTypes() []struct {
 		{"Message", reflect.String},
 		{"Type", reflect.String},
 		{"Props", reflect.Map},
-		{"Hashtags", reflect.String},
 		{"Filenames", reflect.Slice},
 		{"FileIds", reflect.Slice},
 		{"HasReactions", reflect.Bool},
@@ -85,7 +84,7 @@ func postToSlice(post *model.Post) []interface{} {
 		post.Message,
 		post.Type,
 		model.StringInterfaceToJSON(post.Props),
-		post.Hashtags,
+		post.HashTags,
 		model.ArrayToJSON(post.Filenames),
 		model.ArrayToJSON(post.FileIds),
 		post.HasReactions,
@@ -1863,7 +1862,7 @@ func (s *SqlPostStore) search(teamId string, userId string, params *model.Search
 		for _, p := range posts {
 			if searchType == "Hashtags" {
 				exactMatch := false
-				for _, tag := range strings.Split(p.Hashtags, " ") {
+				for _, tag := range strings.Split(p.HashTags, " ") {
 					if termMap[strings.ToUpper(tag)] {
 						exactMatch = true
 						break

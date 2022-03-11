@@ -222,7 +222,7 @@ func (a *App) CreatePost(c *request.Context, post *model.Post, channel *model.Ch
 		}
 	}
 
-	post.Hashtags, _ = model.ParseHashtags(post.Message)
+	post.HashTags, _ = model.ParseHashtags(post.Message)
 
 	if err = a.FillInPostProps(post, channel); err != nil {
 		return nil, err
@@ -611,7 +611,7 @@ func (a *App) UpdatePost(c *request.Context, post *model.Post, safeUpdate bool) 
 	if newPost.Message != post.Message {
 		newPost.Message = post.Message
 		newPost.EditAt = model.GetMillis()
-		newPost.Hashtags, _ = model.ParseHashtags(post.Message)
+		newPost.HashTags, _ = model.ParseHashtags(post.Message)
 	}
 
 	if !safeUpdate {

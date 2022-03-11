@@ -2199,7 +2199,7 @@ func TestImportimportMultiplePostLines(t *testing.T) {
 	postBool = post.Message != *data.Post.Message || post.CreateAt != *data.Post.CreateAt || post.UserId != user.Id
 	require.False(t, postBool, "Post properties not as expected")
 
-	require.Equal(t, "#hashtagmashupcity", post.Hashtags, "Hashtags not as expected: %s", post.Hashtags)
+	require.Equal(t, "#hashtagmashupcity", post.HashTags, "Hashtags not as expected: %s", post.HashTags)
 
 	// Post with flags.
 	username2 := model.NewId()
@@ -2796,7 +2796,7 @@ func TestImportImportPost(t *testing.T) {
 		postBool := post.Message != *data.Post.Message || post.CreateAt != *data.Post.CreateAt || post.UserId != user.Id
 		require.False(t, postBool, "Post properties not as expected")
 
-		require.Equal(t, "#hashtagmashupcity", post.Hashtags, "Hashtags not as expected: %s", post.Hashtags)
+		require.Equal(t, "#hashtagmashupcity", post.HashTags, "Hashtags not as expected: %s", post.HashTags)
 	})
 
 	t.Run("Post with flags", func(t *testing.T) {
@@ -3459,7 +3459,7 @@ func TestImportImportDirectPost(t *testing.T) {
 		require.Equal(t, post.Message, *data.DirectPost.Message)
 		require.Equal(t, post.CreateAt, *data.DirectPost.CreateAt)
 		require.Equal(t, post.UserId, th.BasicUser.Id)
-		require.Equal(t, post.Hashtags, "#hashtagmashupcity")
+		require.Equal(t, post.HashTags, "#hashtagmashupcity")
 	})
 
 	t.Run("Test with some flags", func(t *testing.T) {
@@ -3794,7 +3794,7 @@ func TestImportImportDirectPost(t *testing.T) {
 		require.Equal(t, post.Message, *data.DirectPost.Message)
 		require.Equal(t, post.CreateAt, *data.DirectPost.CreateAt)
 		require.Equal(t, post.UserId, th.BasicUser.Id)
-		require.Equal(t, post.Hashtags, "#hashtagmashupcity")
+		require.Equal(t, post.HashTags, "#hashtagmashupcity")
 	})
 
 	t.Run("Test with some flags", func(t *testing.T) {

@@ -90,10 +90,10 @@ type Post struct {
 	MessageSource string `json:"message_source,omitempty"`
 
 	Type          string          `json:"type"`
-	propsMu       sync.RWMutex    `db:"-"`       // Unexported mutex used to guard Post.Props.
-	Props         StringInterface `json:"props"` // Deprecated: use GetProps()
-	Hashtags      string          `json:"hashtags"`
-	Filenames     StringArray     `json:"-"` // Deprecated, do not use this field any more
+	propsMu       sync.RWMutex    `db:"-"`          // Unexported mutex used to guard Post.Props.
+	Props         StringInterface `json:"props"`    // Deprecated: use GetProps()
+	HashTags      []*HashTag      `json:"hashtags"` // Deprecated: use GetHashtags()
+	Filenames     StringArray     `json:"-"`        // Deprecated, do not use this field any more
 	FileIds       StringArray     `json:"file_ids,omitempty"`
 	PendingPostId string          `json:"pending_post_id"`
 	HasReactions  bool            `json:"has_reactions,omitempty"`
@@ -198,7 +198,7 @@ func (o *Post) ShallowCopy(dst *Post) error {
 	dst.MessageSource = o.MessageSource
 	dst.Type = o.Type
 	dst.Props = o.Props
-	dst.Hashtags = o.Hashtags
+	dst.HashTags = o.HashTags
 	dst.Filenames = o.Filenames
 	dst.FileIds = o.FileIds
 	dst.PendingPostId = o.PendingPostId
@@ -302,8 +302,10 @@ func (o *Post) IsValid(maxPostSize int) *AppError {
 		return NewAppError("Post.IsValid", "model.post.is_valid.msg.app_error", nil, "id="+o.Id, http.StatusBadRequest)
 	}
 
-	if utf8.RuneCountInString(o.Hashtags) > PostHashtagsMaxRunes {
-		return NewAppError("Post.IsValid", "model.post.is_valid.hashtags.app_error", nil, "id="+o.Id, http.StatusBadRequest)
+	for _, ht := range o.HashTags {
+		if utf8.RuneCountInString(ht.Text) > PostHashtagsMaxRunes {
+			return NewAppError("Post.IsValid", "model.post.is_valid.hashtags.app_error", nil, "id="+o.Id, http.StatusBadRequest)
+		}
 	}
 
 	switch o.Type {

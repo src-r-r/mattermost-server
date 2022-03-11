@@ -643,13 +643,19 @@ func (si *SlackImporter) oldImportPost(post *model.Post) string {
 			remainder = ""
 		}
 
-		post.Hashtags, _ = model.ParseHashtags(post.Message)
+		post.HashTags, _ = model.ParseHashtags(post.Message)
 
 		post.RootId = firstPostId
 
-		_, err := si.store.Post().Save(post)
+		post, err := si.store.Post().Save(post)
 		if err != nil {
 			mlog.Debug("Error saving post.", mlog.String("user_id", post.UserId), mlog.String("message", post.Message))
+		}
+
+		_, hashTagsText := model.ParseHashtags(post.Message)
+
+		for _, hashText := range hashTagsText {
+			si.store.HashTag().UpdateOrSave(hashText, post)
 		}
 
 		if firstIteration {

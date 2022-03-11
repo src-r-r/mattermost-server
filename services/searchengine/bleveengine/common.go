@@ -127,7 +127,7 @@ func BLVPostFromPostForIndexing(post *model.PostForIndexing) *BLVPost {
 		CreateAt:  post.CreateAt,
 		Message:   post.Message,
 		Type:      post.Type,
-		Hashtags:  strings.Fields(post.Hashtags),
+		Hashtags:  strings.Fields(post.HashTags),
 	}
 }
 

@@ -42,7 +42,7 @@ func TestCreatePost(t *testing.T) {
 	CheckCreatedStatus(t, resp)
 
 	require.Equal(t, post.Message, rpost.Message, "message didn't match")
-	require.Equal(t, "#hashtag", rpost.Hashtags, "hashtag didn't match")
+	require.Equal(t, "#hashtag", rpost.HashTags, "hashtag didn't match")
 	require.Empty(t, rpost.FileIds)
 	require.Equal(t, 0, int(rpost.EditAt), "newly created post shouldn't have EditAt set")
 	require.Nil(t, rpost.GetProp(model.PropsAddChannelMember), "newly created post shouldn't have Props['add_channel_member'] set")
@@ -729,14 +729,14 @@ func TestUpdatePost(t *testing.T) {
 		require.NoError(t, err)
 
 		assert.Equal(t, msg1, rrupost.Message, "failed to update message")
-		assert.Equal(t, "#hashtag", rrupost.Hashtags, "failed to update hashtags")
+		assert.Equal(t, "#hashtag", rrupost.HashTags, "failed to update hashtags")
 		assert.Nil(t, rrupost.GetProp(model.PropsAddChannelMember), "failed to sanitize Props['add_channel_member'], should be nil")
 
 		actual, _, err := client.GetPost(rpost.Id, "")
 		require.NoError(t, err)
 
 		assert.Equal(t, msg1, actual.Message, "failed to update message")
-		assert.Equal(t, "#hashtag", actual.Hashtags, "failed to update hashtags")
+		assert.Equal(t, "#hashtag", actual.HashTags, "failed to update hashtags")
 		assert.Nil(t, actual.GetProp(model.PropsAddChannelMember), "failed to sanitize Props['add_channel_member'], should be nil")
 	})
 
@@ -902,7 +902,7 @@ func TestPatchPost(t *testing.T) {
 		assert.False(t, rpost.IsPinned, "IsPinned did not update properly")
 		assert.Equal(t, "#otherhashtag other message", rpost.Message, "Message did not update properly")
 		assert.Equal(t, *patch.Props, rpost.GetProps(), "Props did not update properly")
-		assert.Equal(t, "#otherhashtag", rpost.Hashtags, "Message did not update properly")
+		assert.Equal(t, "#otherhashtag", rpost.HashTags, "Message did not update properly")
 		assert.Equal(t, model.StringArray(fileIDs[0:2]), rpost.FileIds, "FileIds should not update")
 		assert.False(t, rpost.HasReactions, "HasReactions did not update properly")
 	})

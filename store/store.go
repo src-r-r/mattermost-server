@@ -22,6 +22,7 @@ type StoreResult struct {
 type Store interface {
 	Team() TeamStore
 	Channel() ChannelStore
+	HashTag() HashTagStore
 	Post() PostStore
 	RetentionPolicy() RetentionPolicyStore
 	Thread() ThreadStore
@@ -318,6 +319,18 @@ type ThreadStore interface {
 	PermanentDeleteBatchThreadMembershipsForRetentionPolicies(now, globalPolicyEndTime, limit int64, cursor model.RetentionPolicyCursor) (int64, model.RetentionPolicyCursor, error)
 	DeleteOrphanedRows(limit int) (deleted int64, err error)
 	GetThreadUnreadReplyCount(threadMembership *model.ThreadMembership) (int64, error)
+}
+
+type HashTagStore interface {
+	// Create/Update (same operation)
+	UpdateMultiple(hashTags []*model.HashTag) ([]*model.HashTag, int, error)
+	// Update(tagText string, post *model.Post) (*model.HashTag, error)
+	// Read
+	// Complete(prefix string, post *model.HashTag) (*model.HashTagList, error)
+	GetPostHashTags(post *model.Post) ([]string, *model.HashTagList, error)
+	Get(tagText string) (*model.HashTag, error)
+	// GetLastUsed(limit int, public bool, topic string) (*model.HashTagList, error)
+	// GetMostUsed(limit int, public bool, topic string) (*model.HashTagList, error)
 }
 
 type PostStore interface {
