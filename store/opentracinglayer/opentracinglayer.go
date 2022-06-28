@@ -30,6 +30,7 @@ type OpenTracingLayer struct {
 	EmojiStore                store.EmojiStore
 	FileInfoStore             store.FileInfoStore
 	GroupStore                store.GroupStore
+	HashTagStore              store.HashTagStore
 	JobStore                  store.JobStore
 	LicenseStore              store.LicenseStore
 	LinkMetadataStore         store.LinkMetadataStore
@@ -100,6 +101,10 @@ func (s *OpenTracingLayer) FileInfo() store.FileInfoStore {
 
 func (s *OpenTracingLayer) Group() store.GroupStore {
 	return s.GroupStore
+}
+
+func (s *OpenTracingLayer) HashTag() store.HashTagStore {
+	return s.HashTagStore
 }
 
 func (s *OpenTracingLayer) Job() store.JobStore {
@@ -258,6 +263,11 @@ type OpenTracingLayerFileInfoStore struct {
 
 type OpenTracingLayerGroupStore struct {
 	store.GroupStore
+	Root *OpenTracingLayer
+}
+
+type OpenTracingLayerHashTagStore struct {
+	store.HashTagStore
 	Root *OpenTracingLayer
 }
 
@@ -4536,6 +4546,132 @@ func (s *OpenTracingLayerGroupStore) UpsertMembers(groupID string, userIDs []str
 	}
 
 	return result, err
+}
+
+func (s *OpenTracingLayerHashTagStore) GetMostUsedTags(user *model.User, count *uint64) ([]*model.HashTagCount, error) {
+	origCtx := s.Root.Store.Context()
+	span, newCtx := tracing.StartSpanWithParentByContext(s.Root.Store.Context(), "HashTagStore.GetMostUsedTags")
+	s.Root.Store.SetContext(newCtx)
+	defer func() {
+		s.Root.Store.SetContext(origCtx)
+	}()
+
+	defer span.Finish()
+	result, err := s.HashTagStore.GetMostUsedTags(user, count)
+	if err != nil {
+		span.LogFields(spanlog.Error(err))
+		ext.Error.Set(span, true)
+	}
+
+	return result, err
+}
+
+func (s *OpenTracingLayerHashTagStore) GetRecentUserHashTags(user *model.User, count *uint64) ([]*model.HashTagTimed, error) {
+	origCtx := s.Root.Store.Context()
+	span, newCtx := tracing.StartSpanWithParentByContext(s.Root.Store.Context(), "HashTagStore.GetRecentUserHashTags")
+	s.Root.Store.SetContext(newCtx)
+	defer func() {
+		s.Root.Store.SetContext(origCtx)
+	}()
+
+	defer span.Finish()
+	result, err := s.HashTagStore.GetRecentUserHashTags(user, count)
+	if err != nil {
+		span.LogFields(spanlog.Error(err))
+		ext.Error.Set(span, true)
+	}
+
+	return result, err
+}
+
+func (s *OpenTracingLayerHashTagStore) GetUserHashTagsBegin(user *model.User, hash_tag_query *string, count *uint64) ([]*model.HashTagTimed, error) {
+	origCtx := s.Root.Store.Context()
+	span, newCtx := tracing.StartSpanWithParentByContext(s.Root.Store.Context(), "HashTagStore.GetUserHashTagsBegin")
+	s.Root.Store.SetContext(newCtx)
+	defer func() {
+		s.Root.Store.SetContext(origCtx)
+	}()
+
+	defer span.Finish()
+	result, err := s.HashTagStore.GetUserHashTagsBegin(user, hash_tag_query, count)
+	if err != nil {
+		span.LogFields(spanlog.Error(err))
+		ext.Error.Set(span, true)
+	}
+
+	return result, err
+}
+
+func (s *OpenTracingLayerHashTagStore) GetUserHashTagsContains(user *model.User, hash_tag_query *string, count *uint64) ([]*model.HashTagTimed, error) {
+	origCtx := s.Root.Store.Context()
+	span, newCtx := tracing.StartSpanWithParentByContext(s.Root.Store.Context(), "HashTagStore.GetUserHashTagsContains")
+	s.Root.Store.SetContext(newCtx)
+	defer func() {
+		s.Root.Store.SetContext(origCtx)
+	}()
+
+	defer span.Finish()
+	result, err := s.HashTagStore.GetUserHashTagsContains(user, hash_tag_query, count)
+	if err != nil {
+		span.LogFields(spanlog.Error(err))
+		ext.Error.Set(span, true)
+	}
+
+	return result, err
+}
+
+func (s *OpenTracingLayerHashTagStore) QueryHashTagBoard(user *model.User, hash_tag_query *string, count *uint64) (*model.HashTagBoard, error) {
+	origCtx := s.Root.Store.Context()
+	span, newCtx := tracing.StartSpanWithParentByContext(s.Root.Store.Context(), "HashTagStore.QueryHashTagBoard")
+	s.Root.Store.SetContext(newCtx)
+	defer func() {
+		s.Root.Store.SetContext(origCtx)
+	}()
+
+	defer span.Finish()
+	result, err := s.HashTagStore.QueryHashTagBoard(user, hash_tag_query, count)
+	if err != nil {
+		span.LogFields(spanlog.Error(err))
+		ext.Error.Set(span, true)
+	}
+
+	return result, err
+}
+
+func (s *OpenTracingLayerHashTagStore) SaveHashTag(hash_tag *string, post_id *string) error {
+	origCtx := s.Root.Store.Context()
+	span, newCtx := tracing.StartSpanWithParentByContext(s.Root.Store.Context(), "HashTagStore.SaveHashTag")
+	s.Root.Store.SetContext(newCtx)
+	defer func() {
+		s.Root.Store.SetContext(origCtx)
+	}()
+
+	defer span.Finish()
+	err := s.HashTagStore.SaveHashTag(hash_tag, post_id)
+	if err != nil {
+		span.LogFields(spanlog.Error(err))
+		ext.Error.Set(span, true)
+	}
+
+	return err
+}
+
+func (s *OpenTracingLayerHashTagStore) SaveHashTagFromPost(post *model.Post) error {
+	origCtx := s.Root.Store.Context()
+	span, newCtx := tracing.StartSpanWithParentByContext(s.Root.Store.Context(), "HashTagStore.SaveHashTagFromPost")
+	s.Root.Store.SetContext(newCtx)
+	defer func() {
+		s.Root.Store.SetContext(origCtx)
+	}()
+
+	defer span.Finish()
+	err := s.HashTagStore.SaveHashTagFromPost(post)
+	if err != nil {
+		span.LogFields(spanlog.Error(err))
+		ext.Error.Set(span, true)
+	}
+
+	return err
 }
 
 func (s *OpenTracingLayerJobStore) Cleanup(expiryTime int64, batchSize int) error {
@@ -12168,6 +12304,7 @@ func New(childStore store.Store, ctx context.Context) *OpenTracingLayer {
 	newStore.EmojiStore = &OpenTracingLayerEmojiStore{EmojiStore: childStore.Emoji(), Root: &newStore}
 	newStore.FileInfoStore = &OpenTracingLayerFileInfoStore{FileInfoStore: childStore.FileInfo(), Root: &newStore}
 	newStore.GroupStore = &OpenTracingLayerGroupStore{GroupStore: childStore.Group(), Root: &newStore}
+	newStore.HashTagStore = &OpenTracingLayerHashTagStore{HashTagStore: childStore.HashTag(), Root: &newStore}
 	newStore.JobStore = &OpenTracingLayerJobStore{JobStore: childStore.Job(), Root: &newStore}
 	newStore.LicenseStore = &OpenTracingLayerLicenseStore{LicenseStore: childStore.License(), Root: &newStore}
 	newStore.LinkMetadataStore = &OpenTracingLayerLinkMetadataStore{LinkMetadataStore: childStore.LinkMetadata(), Root: &newStore}

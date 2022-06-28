@@ -36,6 +36,11 @@ import (
 
 // AppIface is extracted from App struct and contains all it's exported methods. It's provided to allow partial interface passing and app layers creation.
 type AppIface interface {
+	/**
+	 * Returns the "hash tag board" that will be displayed in the autocompletion
+	 * menu.
+	 **/
+	QueryHashTag(user *model.User, hash_tag_query *string, count *uint64) (*model.HashTagBoard, *model.AppError)
 	// @openTracingParams args
 	ExecuteCommand(c *request.Context, args *model.CommandArgs) (*model.CommandResponse, *model.AppError)
 	// @openTracingParams teamID
@@ -920,7 +925,6 @@ type AppIface interface {
 	PublishUserTyping(userID, channelID, parentId string) *model.AppError
 	PurgeBleveIndexes() *model.AppError
 	PurgeElasticsearchIndexes() *model.AppError
-	QueryHashTag(hash_tag_query *string, count uint64) ([]*string, *model.AppError)
 	ReadFile(path string) ([]byte, *model.AppError)
 	RecycleDatabaseConnection()
 	RegenCommandToken(cmd *model.Command) (*model.Command, *model.AppError)

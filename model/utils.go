@@ -690,3 +690,53 @@ func filterBlocklist(r rune) rune {
 func IsCloud() bool {
 	return os.Getenv("MM_CLOUD_INSTALLATION_ID") != ""
 }
+
+/**
+ * Ensure the hash tag contains a '#' at the beginning
+ **/
+func StringToHashTag(s string) string {
+	if len(s) == 0 {
+		return ""
+	}
+	if s[0] == '#' {
+		return s
+	}
+	return "#" + s
+}
+
+/**
+ * Ensure the string does not contain the hash character
+ **/
+func HashTagToString(s *string) *string {
+	if len(*s) == 0 {
+		return s
+	}
+	if (*s)[0] == '#' {
+		s2 := strings.TrimPrefix(*s, "#")
+		return &s2
+	}
+	return s
+}
+
+/**
+ * Construct a "like" query for a string start.
+ **/
+func LikeBegin(s *string) *string {
+	s2 := (*s) + "%"
+	return &s2
+}
+
+/**
+ * Construct a "like" query for a string start.
+ **/
+func LikeEnd(s *string) *string {
+	s2 := "%" + (*s)
+	return &s2
+}
+
+/**
+ * Construct a "like" query for a string contains.
+ **/
+func LikeContains(s *string) *string {
+	return LikeBegin(LikeEnd(s))
+}

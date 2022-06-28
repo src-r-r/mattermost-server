@@ -429,6 +429,22 @@ github.com/mattn/go-isatty
 github.com/mattn/go-runewidth
 # github.com/mattn/go-sqlite3 v2.0.3+incompatible
 ## explicit
+# github.com/maxatome/go-testdeep v1.11.0
+## explicit; go 1.9
+github.com/maxatome/go-testdeep/helpers/tdutil
+github.com/maxatome/go-testdeep/internal/anchors
+github.com/maxatome/go-testdeep/internal/color
+github.com/maxatome/go-testdeep/internal/ctxerr
+github.com/maxatome/go-testdeep/internal/dark
+github.com/maxatome/go-testdeep/internal/flat
+github.com/maxatome/go-testdeep/internal/hooks
+github.com/maxatome/go-testdeep/internal/json
+github.com/maxatome/go-testdeep/internal/location
+github.com/maxatome/go-testdeep/internal/trace
+github.com/maxatome/go-testdeep/internal/types
+github.com/maxatome/go-testdeep/internal/util
+github.com/maxatome/go-testdeep/internal/visited
+github.com/maxatome/go-testdeep/td
 # github.com/mholt/archiver/v3 v3.5.1
 ## explicit; go 1.13
 github.com/mholt/archiver/v3

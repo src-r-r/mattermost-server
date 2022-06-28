@@ -19,6 +19,7 @@ import (
 type Store struct {
 	TeamStore                 mocks.TeamStore
 	ChannelStore              mocks.ChannelStore
+	HashTagStore              mocks.HashTagStore
 	PostStore                 mocks.PostStore
 	UserStore                 mocks.UserStore
 	RetentionPolicyStore      mocks.RetentionPolicyStore
@@ -62,6 +63,7 @@ func (s *Store) Context() context.Context                          { return s.co
 func (s *Store) Team() store.TeamStore                             { return &s.TeamStore }
 func (s *Store) Channel() store.ChannelStore                       { return &s.ChannelStore }
 func (s *Store) Post() store.PostStore                             { return &s.PostStore }
+func (s *Store) HashTag() store.HashTagStore                       { return &s.HashTagStore }
 func (s *Store) User() store.UserStore                             { return &s.UserStore }
 func (s *Store) RetentionPolicy() store.RetentionPolicyStore       { return &s.RetentionPolicyStore }
 func (s *Store) Bot() store.BotStore                               { return &s.BotStore }

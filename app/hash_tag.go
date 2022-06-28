@@ -9,9 +9,12 @@ import (
 	"github.com/mattermost/mattermost-server/v6/model"
 )
 
-func (a *App) QueryHashTag(hash_tag_query *string, count uint64) ([]*string, *model.AppError) {
-	// Return a list of hashtags that match the query
-	hash_tags, err := a.Srv().GetStore().Post().QueryHashTag(hash_tag_query, count)
+/**
+ * Returns the "hash tag board" that will be displayed in the autocompletion
+ * menu.
+ **/
+func (a *App) QueryHashTag(user *model.User, hash_tag_query *string, count *uint64) (*model.HashTagBoard, *model.AppError) {
+	hash_tags, err := a.Srv().GetStore().HashTag().QueryHashTagBoard(user, hash_tag_query, count)
 	if err != nil {
 		return nil, model.NewAppError("QueryHashTag", "app.hash_tag.query_hash_tag.app_error", nil, err.Error(), http.StatusBadRequest)
 	}

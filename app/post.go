@@ -366,6 +366,13 @@ func (a *App) CreatePost(c *request.Context, post *model.Post, channel *model.Ch
 		return nil, err
 	}
 
+	// siphon any hashtags to the hashtag table.
+	err2 := a.Srv().Store.HashTag().SaveHashTagFromPost(post)
+	if err2 != nil {
+		err3 := model.NewAppError("GetChannel", "app.post.create.hashtag_from_post", nil, err2.Error(), http.StatusInternalServerError)
+		mlog.Warn("Failed to save hash tag from post", mlog.Err(err3))
+	}
+
 	return rpost, nil
 }
 

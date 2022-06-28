@@ -29,6 +29,7 @@ type TimerLayer struct {
 	EmojiStore                store.EmojiStore
 	FileInfoStore             store.FileInfoStore
 	GroupStore                store.GroupStore
+	HashTagStore              store.HashTagStore
 	JobStore                  store.JobStore
 	LicenseStore              store.LicenseStore
 	LinkMetadataStore         store.LinkMetadataStore
@@ -99,6 +100,10 @@ func (s *TimerLayer) FileInfo() store.FileInfoStore {
 
 func (s *TimerLayer) Group() store.GroupStore {
 	return s.GroupStore
+}
+
+func (s *TimerLayer) HashTag() store.HashTagStore {
+	return s.HashTagStore
 }
 
 func (s *TimerLayer) Job() store.JobStore {
@@ -257,6 +262,11 @@ type TimerLayerFileInfoStore struct {
 
 type TimerLayerGroupStore struct {
 	store.GroupStore
+	Root *TimerLayer
+}
+
+type TimerLayerHashTagStore struct {
+	store.HashTagStore
 	Root *TimerLayer
 }
 
@@ -4121,6 +4131,118 @@ func (s *TimerLayerGroupStore) UpsertMembers(groupID string, userIDs []string) (
 		s.Root.Metrics.ObserveStoreMethodDuration("GroupStore.UpsertMembers", success, elapsed)
 	}
 	return result, err
+}
+
+func (s *TimerLayerHashTagStore) GetMostUsedTags(user *model.User, count *uint64) ([]*model.HashTagCount, error) {
+	start := time.Now()
+
+	result, err := s.HashTagStore.GetMostUsedTags(user, count)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("HashTagStore.GetMostUsedTags", success, elapsed)
+	}
+	return result, err
+}
+
+func (s *TimerLayerHashTagStore) GetRecentUserHashTags(user *model.User, count *uint64) ([]*model.HashTagTimed, error) {
+	start := time.Now()
+
+	result, err := s.HashTagStore.GetRecentUserHashTags(user, count)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("HashTagStore.GetRecentUserHashTags", success, elapsed)
+	}
+	return result, err
+}
+
+func (s *TimerLayerHashTagStore) GetUserHashTagsBegin(user *model.User, hash_tag_query *string, count *uint64) ([]*model.HashTagTimed, error) {
+	start := time.Now()
+
+	result, err := s.HashTagStore.GetUserHashTagsBegin(user, hash_tag_query, count)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("HashTagStore.GetUserHashTagsBegin", success, elapsed)
+	}
+	return result, err
+}
+
+func (s *TimerLayerHashTagStore) GetUserHashTagsContains(user *model.User, hash_tag_query *string, count *uint64) ([]*model.HashTagTimed, error) {
+	start := time.Now()
+
+	result, err := s.HashTagStore.GetUserHashTagsContains(user, hash_tag_query, count)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("HashTagStore.GetUserHashTagsContains", success, elapsed)
+	}
+	return result, err
+}
+
+func (s *TimerLayerHashTagStore) QueryHashTagBoard(user *model.User, hash_tag_query *string, count *uint64) (*model.HashTagBoard, error) {
+	start := time.Now()
+
+	result, err := s.HashTagStore.QueryHashTagBoard(user, hash_tag_query, count)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("HashTagStore.QueryHashTagBoard", success, elapsed)
+	}
+	return result, err
+}
+
+func (s *TimerLayerHashTagStore) SaveHashTag(hash_tag *string, post_id *string) error {
+	start := time.Now()
+
+	err := s.HashTagStore.SaveHashTag(hash_tag, post_id)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("HashTagStore.SaveHashTag", success, elapsed)
+	}
+	return err
+}
+
+func (s *TimerLayerHashTagStore) SaveHashTagFromPost(post *model.Post) error {
+	start := time.Now()
+
+	err := s.HashTagStore.SaveHashTagFromPost(post)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("HashTagStore.SaveHashTagFromPost", success, elapsed)
+	}
+	return err
 }
 
 func (s *TimerLayerJobStore) Cleanup(expiryTime int64, batchSize int) error {
@@ -10965,6 +11087,7 @@ func New(childStore store.Store, metrics einterfaces.MetricsInterface) *TimerLay
 	newStore.EmojiStore = &TimerLayerEmojiStore{EmojiStore: childStore.Emoji(), Root: &newStore}
 	newStore.FileInfoStore = &TimerLayerFileInfoStore{FileInfoStore: childStore.FileInfo(), Root: &newStore}
 	newStore.GroupStore = &TimerLayerGroupStore{GroupStore: childStore.Group(), Root: &newStore}
+	newStore.HashTagStore = &TimerLayerHashTagStore{HashTagStore: childStore.HashTag(), Root: &newStore}
 	newStore.JobStore = &TimerLayerJobStore{JobStore: childStore.Job(), Root: &newStore}
 	newStore.LicenseStore = &TimerLayerLicenseStore{LicenseStore: childStore.License(), Root: &newStore}
 	newStore.LinkMetadataStore = &TimerLayerLinkMetadataStore{LinkMetadataStore: childStore.LinkMetadata(), Root: &newStore}

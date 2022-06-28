@@ -23,6 +23,7 @@ type StoreResult struct {
 type Store interface {
 	Team() TeamStore
 	Channel() ChannelStore
+	HashTag() HashTagStore
 	Post() PostStore
 	RetentionPolicy() RetentionPolicyStore
 	Thread() ThreadStore
@@ -386,6 +387,16 @@ type PostStore interface {
 	GetPostsSinceForSync(options model.GetPostsSinceForSyncOptions, cursor model.GetPostsSinceForSyncCursor, limit int) ([]*model.Post, model.GetPostsSinceForSyncCursor, error)
 
 	QueryHashTag(hash_tag_query *string, count uint64) ([]*string, error)
+}
+
+type HashTagStore interface {
+	SaveHashTag(hash_tag *string, post_id *string) error
+	SaveHashTagFromPost(post *model.Post) error
+	GetMostUsedTags(user *model.User, count *uint64) ([]*model.HashTagCount, error)
+	GetRecentUserHashTags(user *model.User, count *uint64) ([]*model.HashTagTimed, error)
+	GetUserHashTagsBegin(user *model.User, hash_tag_query *string, count *uint64) ([]*model.HashTagTimed, error)
+	GetUserHashTagsContains(user *model.User, hash_tag_query *string, count *uint64) ([]*model.HashTagTimed, error)
+	QueryHashTagBoard(user *model.User, hash_tag_query *string, count *uint64) (*model.HashTagBoard, error)
 }
 
 type UserStore interface {

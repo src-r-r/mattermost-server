@@ -337,6 +337,22 @@ func (_m *Store) Group() store.GroupStore {
 	return r0
 }
 
+// HashTag provides a mock function with given fields:
+func (_m *Store) HashTag() store.HashTagStore {
+	ret := _m.Called()
+
+	var r0 store.HashTagStore
+	if rf, ok := ret.Get(0).(func() store.HashTagStore); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(store.HashTagStore)
+		}
+	}
+
+	return r0
+}
+
 // Job provides a mock function with given fields:
 func (_m *Store) Job() store.JobStore {
 	ret := _m.Called()

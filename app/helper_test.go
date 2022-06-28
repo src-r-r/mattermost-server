@@ -30,14 +30,17 @@ import (
 )
 
 type TestHelper struct {
-	App          *App
-	Context      *request.Context
-	Server       *Server
-	BasicTeam    *model.Team
-	BasicUser    *model.User
-	BasicUser2   *model.User
-	BasicChannel *model.Channel
-	BasicPost    *model.Post
+	App             *App
+	Context         *request.Context
+	Server          *Server
+	BasicTeam       *model.Team
+	PrivateTeam     *model.Team
+	BasicUser       *model.User
+	BasicUser2      *model.User
+	PrivateTeamUser *model.User
+	BasicChannel    *model.Channel
+	PrivateChannel  *model.Channel
+	BasicPost       *model.Post
 
 	SystemAdminUser   *model.User
 	LogBuffer         *mlog.Buffer
@@ -215,6 +218,7 @@ var userCache struct {
 	SystemAdminUser *model.User
 	BasicUser       *model.User
 	BasicUser2      *model.User
+	PrivateTeamUser *model.User
 }
 
 func (th *TestHelper) InitBasic() *TestHelper {
@@ -232,20 +236,28 @@ func (th *TestHelper) InitBasic() *TestHelper {
 		th.BasicUser2 = th.CreateUser()
 		th.BasicUser2, _ = th.App.GetUser(th.BasicUser2.Id)
 		userCache.BasicUser2 = th.BasicUser2.DeepCopy()
+
+		th.PrivateTeamUser = th.CreateUser()
+		th.PrivateTeamUser, _ = th.App.GetUser(th.PrivateTeamUser.Id)
+		userCache.PrivateTeamUser = th.PrivateTeamUser.DeepCopy()
 	})
 	// restore cached users
 	th.SystemAdminUser = userCache.SystemAdminUser.DeepCopy()
 	th.BasicUser = userCache.BasicUser.DeepCopy()
 	th.BasicUser2 = userCache.BasicUser2.DeepCopy()
+	th.PrivateTeamUser = userCache.PrivateTeamUser.DeepCopy()
 
 	users := []*model.User{th.SystemAdminUser, th.BasicUser, th.BasicUser2}
 	mainHelper.GetSQLStore().User().InsertUsers(users)
 
 	th.BasicTeam = th.CreateTeam()
+	th.PrivateTeam = th.CreateTeam()
 
 	th.LinkUserToTeam(th.BasicUser, th.BasicTeam)
 	th.LinkUserToTeam(th.BasicUser2, th.BasicTeam)
+	th.LinkUserToTeam(th.PrivateTeamUser, th.PrivateTeam)
 	th.BasicChannel = th.CreateChannel(th.BasicTeam)
+	th.PrivateChannel = th.CreatePrivateChannel(th.PrivateTeam)
 	th.BasicPost = th.CreatePost(th.BasicChannel)
 	return th
 }

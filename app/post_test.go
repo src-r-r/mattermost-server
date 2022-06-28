@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"strings"
 	"sync"
 	"testing"
 	"time"
@@ -1379,104 +1378,6 @@ func TestUpdatePost(t *testing.T) {
 				testCase.Assert(t, previewPost.Metadata.Embeds[0].Data)
 			})
 		}
-	})
-}
-
-func TestHashTagSearch(t *testing.T) {
-	// NOTE: Currently duplicates are expected, since finding already-existing duplicates is expensive.
-	var messages = []string{
-		"This hashtag is #found",
-		"Let's hope this gets #found because I want to go home",
-		"Don't #confuse the developer. Even with #many different #tags",
-		"Keep the extra backup in the #foundry in case it gets lost.",
-		"Multiple hashtags on multiple lines #multi1 #multi2 #multi3",
-		"Multiple hashtags on multiple lines #multi4 #multi5 #multi6",
-		"Multiple hashtags on multiple lines #multi7 #multi8 #multi9",
-		// However, below is considered `DISTINCT` by postgres (hey, I don't make the rules.)
-		"Multiple hashtags on multiple lines #multi7 #multi8 #multi10",
-	}
-
-	setup := func(t *testing.T, enableElasticsearch bool) (*TestHelper, []*model.Post) {
-		th := Setup(t).InitBasic()
-
-		posts := make([]*model.Post, len(messages))
-		for i := 0; i < cap(posts); i++ {
-			post, err := th.App.CreatePost(th.Context, &model.Post{
-				UserId:    th.BasicUser.Id,
-				ChannelId: th.BasicChannel.Id,
-				Message:   messages[i],
-			}, th.BasicChannel, false, true)
-
-			require.Nil(t, err)
-
-			posts[i] = post
-		}
-
-		if enableElasticsearch {
-			th.App.Srv().SetLicense(model.NewTestLicense("elastic_search"))
-
-			th.App.UpdateConfig(func(cfg *model.Config) {
-				*cfg.ElasticsearchSettings.EnableIndexing = true
-				*cfg.ElasticsearchSettings.EnableSearching = true
-			})
-		} else {
-			th.App.UpdateConfig(func(cfg *model.Config) {
-				*cfg.ElasticsearchSettings.EnableSearching = false
-			})
-		}
-
-		return th, posts
-	}
-
-	t.Run("should return the hashtag if valid hashtag is queried", func(t *testing.T) {
-		th, posts := setup(t, false)
-		_ = posts
-		defer th.TearDown()
-
-		hash_tag_query := "found"
-
-		results, err := th.App.QueryHashTag(&hash_tag_query, 10)
-		_ = err
-
-		assert.Nil(t, err)
-
-		assert.Equal(t, 2, len(results))
-		for _, result := range results {
-			assert.True(t, strings.HasPrefix(*result, hash_tag_query))
-		}
-	})
-
-	t.Run("multiple tags on multiple lines still respect the limit", func(t *testing.T) {
-		th, posts := setup(t, false)
-		_ = posts
-		defer th.TearDown()
-
-		hash_tag_query := "multi"
-
-		results, err := th.App.QueryHashTag(&hash_tag_query, 10)
-		_ = err
-
-		assert.Nil(t, err)
-
-		assert.Equal(t, 10, len(results))
-		for _, result := range results {
-			assert.True(t, strings.HasPrefix(*result, hash_tag_query))
-		}
-	})
-
-	t.Run("shouldn't return anything if invalid hashtag queried", func(t *testing.T) {
-		th, posts := setup(t, false)
-		_ = posts
-		defer th.TearDown()
-
-		hash_tag_query := "XaiealhalEcaeD"
-
-		results, err := th.App.QueryHashTag(&hash_tag_query, 10)
-		_ = err
-
-		assert.Nil(t, err)
-
-		assert.Equal(t, 0, len(results))
 	})
 }
 

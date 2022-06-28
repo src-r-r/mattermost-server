@@ -33,6 +33,7 @@ type RetryLayer struct {
 	EmojiStore                store.EmojiStore
 	FileInfoStore             store.FileInfoStore
 	GroupStore                store.GroupStore
+	HashTagStore              store.HashTagStore
 	JobStore                  store.JobStore
 	LicenseStore              store.LicenseStore
 	LinkMetadataStore         store.LinkMetadataStore
@@ -103,6 +104,10 @@ func (s *RetryLayer) FileInfo() store.FileInfoStore {
 
 func (s *RetryLayer) Group() store.GroupStore {
 	return s.GroupStore
+}
+
+func (s *RetryLayer) HashTag() store.HashTagStore {
+	return s.HashTagStore
 }
 
 func (s *RetryLayer) Job() store.JobStore {
@@ -261,6 +266,11 @@ type RetryLayerFileInfoStore struct {
 
 type RetryLayerGroupStore struct {
 	store.GroupStore
+	Root *RetryLayer
+}
+
+type RetryLayerHashTagStore struct {
+	store.HashTagStore
 	Root *RetryLayer
 }
 
@@ -5123,6 +5133,153 @@ func (s *RetryLayerGroupStore) UpsertMembers(groupID string, userIDs []string) (
 		if tries >= 3 {
 			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
 			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerHashTagStore) GetMostUsedTags(user *model.User, count *uint64) ([]*model.HashTagCount, error) {
+
+	tries := 0
+	for {
+		result, err := s.HashTagStore.GetMostUsedTags(user, count)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerHashTagStore) GetRecentUserHashTags(user *model.User, count *uint64) ([]*model.HashTagTimed, error) {
+
+	tries := 0
+	for {
+		result, err := s.HashTagStore.GetRecentUserHashTags(user, count)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerHashTagStore) GetUserHashTagsBegin(user *model.User, hash_tag_query *string, count *uint64) ([]*model.HashTagTimed, error) {
+
+	tries := 0
+	for {
+		result, err := s.HashTagStore.GetUserHashTagsBegin(user, hash_tag_query, count)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerHashTagStore) GetUserHashTagsContains(user *model.User, hash_tag_query *string, count *uint64) ([]*model.HashTagTimed, error) {
+
+	tries := 0
+	for {
+		result, err := s.HashTagStore.GetUserHashTagsContains(user, hash_tag_query, count)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerHashTagStore) QueryHashTagBoard(user *model.User, hash_tag_query *string, count *uint64) (*model.HashTagBoard, error) {
+
+	tries := 0
+	for {
+		result, err := s.HashTagStore.QueryHashTagBoard(user, hash_tag_query, count)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerHashTagStore) SaveHashTag(hash_tag *string, post_id *string) error {
+
+	tries := 0
+	for {
+		err := s.HashTagStore.SaveHashTag(hash_tag, post_id)
+		if err == nil {
+			return nil
+		}
+		if !isRepeatableError(err) {
+			return err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerHashTagStore) SaveHashTagFromPost(post *model.Post) error {
+
+	tries := 0
+	for {
+		err := s.HashTagStore.SaveHashTagFromPost(post)
+		if err == nil {
+			return nil
+		}
+		if !isRepeatableError(err) {
+			return err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return err
 		}
 		timepkg.Sleep(100 * timepkg.Millisecond)
 	}
@@ -13866,6 +14023,7 @@ func New(childStore store.Store) *RetryLayer {
 	newStore.EmojiStore = &RetryLayerEmojiStore{EmojiStore: childStore.Emoji(), Root: &newStore}
 	newStore.FileInfoStore = &RetryLayerFileInfoStore{FileInfoStore: childStore.FileInfo(), Root: &newStore}
 	newStore.GroupStore = &RetryLayerGroupStore{GroupStore: childStore.Group(), Root: &newStore}
+	newStore.HashTagStore = &RetryLayerHashTagStore{HashTagStore: childStore.HashTag(), Root: &newStore}
 	newStore.JobStore = &RetryLayerJobStore{JobStore: childStore.Job(), Root: &newStore}
 	newStore.LicenseStore = &RetryLayerLicenseStore{LicenseStore: childStore.License(), Root: &newStore}
 	newStore.LinkMetadataStore = &RetryLayerLinkMetadataStore{LinkMetadataStore: childStore.LinkMetadata(), Root: &newStore}

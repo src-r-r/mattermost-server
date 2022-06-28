@@ -73,6 +73,7 @@ var tablesToCheckForCollation = []string{"incomingwebhooks", "preferences", "use
 type SqlStoreStores struct {
 	team                 store.TeamStore
 	channel              store.ChannelStore
+	hash_tag             store.HashTagStore
 	post                 store.PostStore
 	retentionPolicy      store.RetentionPolicyStore
 	thread               store.ThreadStore
@@ -780,6 +781,10 @@ func (ss *SqlStore) Channel() store.ChannelStore {
 
 func (ss *SqlStore) Post() store.PostStore {
 	return ss.stores.post
+}
+
+func (ss *SqlStore) HashTag() store.HashTagStore {
+	return ss.stores.hash_tag
 }
 
 func (ss *SqlStore) RetentionPolicy() store.RetentionPolicyStore {
