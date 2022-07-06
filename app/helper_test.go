@@ -255,7 +255,7 @@ func (th *TestHelper) InitBasic() *TestHelper {
 
 	th.LinkUserToTeam(th.BasicUser, th.BasicTeam)
 	th.LinkUserToTeam(th.BasicUser2, th.BasicTeam)
-	th.LinkUserToTeam(th.PrivateTeamUser, th.PrivateTeam)
+	// th.LinkUserToTeam(th.PrivateTeamUser, th.PrivateTeam)
 	th.BasicChannel = th.CreateChannel(th.BasicTeam)
 	th.PrivateChannel = th.CreatePrivateChannel(th.PrivateTeam)
 	th.BasicPost = th.CreatePost(th.BasicChannel)
